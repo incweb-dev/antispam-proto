@@ -1,0 +1,23 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/app
+      - ./docker/conf:/etc/nginx/conf.d
+      - ./docker/nginx_logs:/var/log/nginx
+      - ./docker/ssl:/etc/nginx/ssl
+    links:
+      - fpm
+  fpm:
+    build:
+      context: .
+      dockerfile: docker/php82-fpm.Dockerfile
+    volumes:
+      - ./:/var/www/app
+    #environment:
+      #- PHP_INI_SCAN_DIR=./docker:/usr/local/etc/php/conf.d
