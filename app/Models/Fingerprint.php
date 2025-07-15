@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Fingerprint extends Model
 {
     protected $fillable = [
+        'project_id',
         'visitor_hash',
         'local_id',
         'ip',
@@ -26,7 +28,12 @@ class Fingerprint extends Model
         'time_to_submit',
     ];
 
-    public function order(): HasOne {
-        return $this->hasOne(Order::class);
+    protected $casts = [
+        'webdriver' => 'boolean',
+        'time_to_submit' => 'integer',
+    ];
+
+    public function project(): BelongsTo {
+        return $this->belongsTo(Project::class);
     }
 }

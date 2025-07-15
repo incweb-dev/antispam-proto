@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\Fingerprint;
 use App\Models\Order;
+use App\Models\Project;
 
 class FingerprintService {
-    public function createOrUpdate(
+    public function create(
+        string $project_token,
         string $visitor_hash,
         ?string $local_id,
         ?string $ip,
@@ -24,13 +26,11 @@ class FingerprintService {
         ?bool $webdriver,
         ?int $time_to_submit,
     ): Fingerprint {
-        return Fingerprint::firstOrCreate(
+        return Fingerprint::create(
             [
+                'project_token' => Project::where('token', $project_token)->select('id')->firstOrFail()->id,
                 'visitor_hash' => $visitor_hash,
                 'local_id' => $local_id,
-            ],
-
-            [
                 'ip' => $ip,
                 'user_agent' => $user_agent,
                 'language' => $language,
@@ -47,15 +47,5 @@ class FingerprintService {
                 'time_to_submit' => $time_to_submit,
             ],
         );
-    }
-
-    public function bindToOrder(Fingerprint $fingerprint, Order $order): void {
-        if($order->fingerprint_id !== $fingerprint->id) {
-            $order->update(['fingerprint_id' => $fingerprint->id]);
-        }
-    }
-
-    public function findByHash(string $hash): ?Fingerprint {
-        return Fingerprint::where('visitor_hash', $hash)->first();
     }
 };

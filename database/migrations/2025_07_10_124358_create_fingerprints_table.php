@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('fingerprints', function (Blueprint $table) {
             $table->id();
-            $table->string('visitor_hash', 128)->index();
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
+            $table->string('visitor_hash', 128);
             $table->string('local_id', 128)->nullable();
             $table->string('ip', 64)->nullable();
             $table->string('user_agent', 512)->nullable();
@@ -30,6 +32,12 @@ return new class extends Migration
             $table->boolean('webdriver')->default(false);
             $table->unsignedInteger('time_to_submit')->nullable();
             $table->timestamps();
+
+            // Индексация
+            $table->index(['visitor_hash', 'created_at']);
+            $table->index(['user_agent', 'created_at']);
+            $table->index(['project_id', 'ip']);
+            $table->index(['project_id', 'local_id']);
         });
     }
 
