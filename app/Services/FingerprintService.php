@@ -7,8 +7,30 @@ use App\Models\Order;
 use App\Models\Project;
 
 class FingerprintService {
+    /**
+     * Добавить новый слепок в базу данных
+     *
+     * @param Project project Проект, к которому относится слепок
+     * @param string $visitor_hash
+     * @param string|null $local_id
+     * @param string|null $ip
+     * @param string|null $user_agent
+     * @param string|null $language
+     * @param string|null $platform
+     * @param string|null $screen
+     * @param integer|null $color_depth
+     * @param float|null $pixel_ratio
+     * @param string|null $timezone
+     * @param string|null $referrer
+     * @param string|null $connection_type
+     * @param integer|null $memory
+     * @param integer|null $cores
+     * @param boolean|null $webdriver
+     * @param integer|null $time_to_submit
+     * @return Fingerprint Новый слепок
+     */
     public function create(
-        string $project_token,
+        Project $project,
         string $visitor_hash,
         ?string $local_id,
         ?string $ip,
@@ -28,7 +50,7 @@ class FingerprintService {
     ): Fingerprint {
         return Fingerprint::create(
             [
-                'project_token' => Project::where('token', $project_token)->select('id')->firstOrFail()->id,
+                'project_token' => $project->id,
                 'visitor_hash' => $visitor_hash,
                 'local_id' => $local_id,
                 'ip' => $ip,

@@ -26,11 +26,14 @@ class Fingerprint extends Model
         'cores',
         'webdriver',
         'time_to_submit',
+
+        'score',
     ];
 
     protected $casts = [
         'webdriver' => 'boolean',
         'time_to_submit' => 'integer',
+        'score' => 'float',
     ];
 
     public function project(): BelongsTo {

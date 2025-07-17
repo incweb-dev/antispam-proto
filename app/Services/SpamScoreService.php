@@ -6,8 +6,14 @@ use App\Models\Fingerprint;
 use App\Models\Order;
 
 class SpamScoreService {
-    public function calculate(Fingerprint $fingerprint): float {
-        return array_sum([
+    /**
+     * Оценить слепок по признакам спама. Значение сохраняется в поле score переданной модели.
+     *
+     * @param Fingerprint $fingerprint Оцениваемый слепок
+     * @return float Итоговая оценка
+     */
+    public function score(Fingerprint $fingerprint): float {
+        $finalScore = array_sum([
             $this->checkLocalId($fingerprint),
             $this->checkOtherOrdersIps($fingerprint),
             $this->checkUserAgent($fingerprint),
@@ -16,6 +22,10 @@ class SpamScoreService {
             $this->checkReferrerAndUtm($fingerprint),
             $this->checkWebdriver($fingerprint),
         ]);
+
+        $fingerprint->update(['score' => $finalScore]);
+
+        return $finalScore;
     }
 
     protected function checkLocalId(Fingerprint $fingerprint): float

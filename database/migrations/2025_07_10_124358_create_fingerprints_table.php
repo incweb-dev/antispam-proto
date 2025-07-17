@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('cores')->nullable();
             $table->boolean('webdriver')->default(false);
             $table->unsignedInteger('time_to_submit')->nullable();
+            $table->float('score')->nullable();
             $table->timestamps();
 
             // Индексация

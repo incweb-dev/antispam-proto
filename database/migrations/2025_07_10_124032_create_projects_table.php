@@ -15,6 +15,8 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('token', Project::TOKEN_LENGTH)->unique();
+            $table->string('name')->unique();
+            $table->unsignedBigInteger('fingerprints_count')->default(0);
             $table->timestamps();
         });
     }
